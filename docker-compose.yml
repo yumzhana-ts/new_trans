@@ -1,0 +1,141 @@
+services:
+  frontend:
+    build: ./nextApp
+    container_name: frontend
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      MAIL_FROM: ${MAIL_FROM}
+      APP_URL: ${APP_URL}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+    ports:
+    - "3000:3000"
+    networks:
+      - transnet
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - backend-logs:/var/log/backend
+    restart: on-failure
+
+  trivia-ws:
+    build: ./trivia-ws
+    container_name: trivia-ws
+    environment:
+      PORT: 3000
+      PACKS_DIR: /app/trivia_packs
+      QUESTIONS_EASY: ${QUESTIONS_EASY:-5}
+      QUESTIONS_MEDIUM: ${QUESTIONS_MEDIUM:-5}
+      QUESTIONS_HARD: ${QUESTIONS_HARD:-5}
+      QUESTION_TIMER_MS: ${QUESTION_TIMER_MS:-30000}
+      CORS_ORIGIN: ${APP_URL}
+      DATABASE_URL: ${DATABASE_URL}
+    volumes:
+      - ./trivia-ws/trivia_packs:/app/trivia_packs
+    networks:
+      - transnet
+    restart: on-failure
+
+  caddy:
+    build: ./caddy
+    container_name: caddy
+    ports:
+      - "8080:80"
+      - "8443:443"
+    depends_on:
+      - frontend
+    networks:
+      - transnet
+
+  database:
+    image: postgres:16
+    container_name: database
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - transnet
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  elasticsearch:
+    build: ./elasticsearch
+    container_name: es
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    env_file:
+      - .env
+    networks:
+      - transnet
+
+  kibana:
+    build: ./kibana
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    env_file:
+      - .env
+    networks:
+      - transnet
+
+  logstash:
+    build: ./logstash
+    container_name: logstash
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - backend-logs:/logs
+    env_file:
+      - .env
+    networks:
+      - transnet
+
+  elk-initializer:
+    build: ./elk_init
+    container_name: elk-initializer
+    env_file:
+      - .env
+    networks:
+      - transnet
+    restart: "no"
+
+
+volumes:
+  db-volume:
+    name: transcendence_db-volume
+    driver: local
+
+  frontend-data:
+    driver: local
+  
+  backend-logs:
+    driver: local
+
+  es_data:
+    driver: local
+
+  logstash_data:
+    driver: local
+
+networks:
+  transnet:
+    driver: bridge

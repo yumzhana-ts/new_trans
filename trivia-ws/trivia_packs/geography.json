@@ -1,0 +1,38 @@
+{
+  "id": "geography",
+  "name": "World Geography",
+  "easy": [
+    {
+      "id": "geo_001",
+      "question": "What is the capital of Australia?",
+      "answers": ["Canberra", "Sydney", "Melbourne", "Brisbane"],
+      "comment": "Canberra was purpose-built as a compromise between Sydney and Melbourne, both of which wanted to be the capital.",
+      "taunt": "Oh no, you failed 5th grade geography. Womp womp."
+    },
+    {
+      "id": "geo_002",
+      "question": "Which country has the most natural lakes?",
+      "answers": ["Canada", "Russia", "USA", "Finland"],
+      "comment": "Canada has over 60% of the world's lakes — more than all other countries combined.",
+      "taunt": "It's literally the country shaped like a lake magnet. Come on."
+    }
+  ],
+  "medium": [
+    {
+      "id": "geo_003",
+      "question": "What is the smallest country in the world by area?",
+      "answers": ["Vatican City", "Monaco", "San Marino", "Liechtenstein"],
+      "comment": "Vatican City covers just 0.44 km² and is entirely surrounded by Rome.",
+      "taunt": "It's been in every trivia game since the beginning of time. No excuses."
+    }
+  ],
+  "hard": [
+    {
+      "id": "geo_004",
+      "question": "Which African country was formerly known as Dahomey?",
+      "answers": ["Benin", "Togo", "Ghana", "Niger"],
+      "comment": "Dahomey was renamed Benin in 1975, after the Bight of Benin on its southern coast.",
+      "taunt": "Okay, that one was genuinely hard. We'll let this slide."
+    }
+  ]
+}

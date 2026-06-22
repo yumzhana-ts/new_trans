@@ -1,0 +1,24 @@
+localhost:80 {
+    redir https://{host}:8443{uri} permanent
+}
+
+localhost:443 {
+    tls internal
+    log
+
+	@websocket path /ws /ws/*
+	handle @websocket {
+			uri strip_prefix /ws
+			reverse_proxy trivia-ws:3000
+		}
+    
+    # Kibana → Elastic Stack UI
+    handle /kibana* {
+        reverse_proxy kibana:5601
+    }
+
+    handle /* {
+        reverse_proxy frontend:3000
+    }
+
+}

@@ -1,0 +1,7 @@
+FROM docker.elastic.co/kibana/kibana:9.3.1
+
+ENV ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
+ENV SERVER_BASEPATH=/kibana
+ENV SERVER_REWRITEBASEPATH=true
+ENV SERVER_HOST=0.0.0.0

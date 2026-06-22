@@ -1,0 +1,38 @@
+{
+  "id": "science",
+  "name": "General Science",
+  "easy": [
+    {
+      "id": "sci_001",
+      "question": "What planet is known as the Red Planet?",
+      "answers": ["Mars", "Venus", "Jupiter", "Saturn"],
+      "comment": "Mars is called the Red Planet because of its reddish appearance caused by iron oxide on its surface.",
+      "taunt": "Seriously, you’ve seen pictures of this in every space textbook!"
+    },
+    {
+      "id": "sci_002",
+      "question": "What is H2O commonly known as?",
+      "answers": ["Water", "Hydrogen Peroxide", "Oxygen", "Salt"],
+      "comment": "H2O is the chemical formula for water.",
+      "taunt": "You drink it every day, how did you forget?"
+    }
+  ],
+  "medium": [
+    {
+      "id": "sci_003",
+      "question": "Which gas do plants absorb from the atmosphere during photosynthesis?",
+      "answers": ["Carbon Dioxide", "Oxygen", "Nitrogen", "Hydrogen"],
+      "comment": "Plants absorb CO2 and convert it into sugars, releasing oxygen in the process.",
+      "taunt": "Come on, you learned this in school!"
+    }
+  ],
+  "hard": [
+    {
+      "id": "sci_004",
+      "question": "What is the name of the particle that has no electric charge and is found in the nucleus of an atom?",
+      "answers": ["Neutron", "Proton", "Electron", "Photon"],
+      "comment": "Neutrons are neutral particles inside the nucleus alongside protons.",
+      "taunt": "If you missed this, you really need a chemistry refresher!"
+    }
+  ]
+}

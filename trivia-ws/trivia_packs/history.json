@@ -1,0 +1,38 @@
+{
+  "id": "history",
+  "name": "World History",
+  "easy": [
+    {
+      "id": "hist_001",
+      "question": "Who was the first President of the United States?",
+      "answers": ["George Washington", "Thomas Jefferson", "John Adams", "Benjamin Franklin"],
+      "comment": "George Washington served from 1789 to 1797 and is known as the 'Father of His Country.'",
+      "taunt": "Come on, even fifth graders know this one!"
+    },
+    {
+      "id": "hist_002",
+      "question": "In which year did World War II end?",
+      "answers": ["1945", "1939", "1918", "1941"],
+      "comment": "World War II officially ended in 1945 after the surrender of Germany and Japan.",
+      "taunt": "Seriously? This is history 101!"
+    }
+  ],
+  "medium": [
+    {
+      "id": "hist_003",
+      "question": "Which empire was ruled by Genghis Khan?",
+      "answers": ["Mongol Empire", "Ottoman Empire", "Roman Empire", "Persian Empire"],
+      "comment": "Genghis Khan founded the Mongol Empire in the early 13th century, which became the largest contiguous empire in history.",
+      "taunt": "Hint: think horses and steppe!"
+    }
+  ],
+  "hard": [
+    {
+      "id": "hist_004",
+      "question": "The Treaty of Westphalia in 1648 ended which war?",
+      "answers": ["Thirty Years' War", "Hundred Years' War", "War of the Roses", "Seven Years' War"],
+      "comment": "The Treaty of Westphalia ended the Thirty Years' War in the Holy Roman Empire and set the foundation for modern state sovereignty.",
+      "taunt": "A deep cut—most people don’t get this without history books."
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin: 0.2em 0;
+      animation: fadeInDown 1s ease forwards;
+      opacity: 0;
+    }
+    p {
+      font-size: 1.2em;
+      margin: 0.5em 0;
+      animation: fadeInUp 1s ease 0.5s forwards;
+      opacity: 0;
+    }
+    @keyframes fadeInDown {
+      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(-20px); }
+    }
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(20px); }
+    }
+    .button {
+      display: inline-block;
+      margin-top: 1em;
+      padding: 0.8em 2em;
+      font-size: 1em;
+      color: #2575fc;
+      background: #fff;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: 0.3s;
+      animation: fadeInUp 1s ease 1s forwards;
+      opacity: 0;
+    }
+    .button:hover {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>Welcome to My Site</h1>
+    <p>Discover amazing content and explore new ideas.</p>
+    <a href="#explore" class="button">Get Started</a>
+  </div>
+</body>
+</html>
