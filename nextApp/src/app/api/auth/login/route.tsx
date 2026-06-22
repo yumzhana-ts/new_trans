@@ -3,14 +3,10 @@ import { prisma } from "@/lib/prisma";
 import * as bcrypt from "bcryptjs";
 import { logger } from "@/lib/logger";
 import {
-  appendPendingTwoFactorCookie,
   appendSessionCookie,
   clearCookie,
-  createPendingTwoFactorToken,
   createSessionToken,
-  getPendingTwoFactorExpiry,
   getSessionExpiry,
-  PENDING_2FA_COOKIE,
   SESSION_COOKIE,
 } from "@/lib/session";
 
@@ -107,11 +103,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const twoFactorCredential = await prisma.twoFactorCredential.findUnique({
-      where: { user_id: user.id },
-    });
-
-    // Clear rate limit on success
+   // Clear rate limit on success
     clearRateLimit(ip, normalizedEmail);
 
     const token = createSessionToken();
@@ -133,12 +125,11 @@ export async function POST(req: NextRequest) {
 
     const res = NextResponse.json({
       id: user.id,
-      redirect_to: user.role === "admin" ? "/admin/users" : "/profile",
+      redirect_to: user.role === "admin" ? "/admin/users" : "/dashboard",
     },
     { status: 200 }
     );
     appendSessionCookie(res, token);
-    clearCookie(res, PENDING_2FA_COOKIE);
     return res;
 
   } catch (err) {
