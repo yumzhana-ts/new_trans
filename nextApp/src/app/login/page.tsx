@@ -10,13 +10,10 @@ export default function AuthPage() {
     login,
     register,
     resendVerification,
-    verifyTwoFactor,
     loading,
     errorMessage,
     successMessage,
     pendingVerificationEmail,
-    twoFactorRequired,
-    setTwoFactorRequired,
     setErrorMessage,
     setSuccessMessage,
   } = useAuth();
@@ -27,11 +24,9 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [username, setUsername] = useState(''); // only for registration
-  const [socialError, setSocialError] = useState<string | null>(null);
-
+  
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    setSocialError(null);
     setErrorMessage(null);
     if (params.get('reset') === 'success') {
       setSuccessMessage('Password reset successful. You can now log in with your new password.');
@@ -59,7 +54,7 @@ export default function AuthPage() {
     const nextQuery = params.toString();
     const nextUrl = nextQuery ? `/login?${nextQuery}` : '/login';
     window.history.replaceState({}, '', nextUrl);
-  }, [setErrorMessage, setSuccessMessage, setTwoFactorRequired]);
+  }, [setErrorMessage, setSuccessMessage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,7 +104,6 @@ export default function AuthPage() {
                 </h3>
 
                 {errorMessage && <div className="alert alert-danger py-2">{errorMessage}</div>}
-                {socialError && <div className="alert alert-danger py-2">{socialError}</div>}
                 {!isLogin && password && confirmPassword && password !== confirmPassword && (
                   <div className="alert alert-danger py-2">Passwords do not match.</div>
                 )}
@@ -158,7 +152,6 @@ export default function AuthPage() {
                     />
                   </div>
 
-                  {isLogin && (
                     <div className="mb-3">
                       <label className="form-label">Password</label>
                       <div className="input-group">
@@ -178,7 +171,6 @@ export default function AuthPage() {
                         </button>
                       </div>
                     </div>
-                  )}
 
                   {!isLogin && (
                     <div className="mb-3">
