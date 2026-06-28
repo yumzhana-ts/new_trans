@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
+import { clearAuthCookies } from "@/lib/session";
 
 // PUT — update user
 export async function PUT(
@@ -80,9 +81,20 @@ export async function DELETE(
   try {
     const existingUser = await prisma.users.findUnique({ where: { id: targetUserId } });
     if (!existingUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (existingUser.is_protected) {
+      return NextResponse.json(
+        { error: "Protected admin cannot be deleted" },
+        { status: 403 }
+      );
+    }
+    await prisma.$transaction([
+      prisma.sessions.deleteMany({ where: { user_id: targetUserId } }),
+      prisma.users.delete({ where: { id: targetUserId } }),
+    ]);
 
-    await prisma.users.delete({ where: { id: targetUserId } });
-    return new NextResponse(null, { status: 204 });
+    const res = NextResponse.json({ message: "User deleted" });
+    if (targetUserId === authUser.id) clearAuthCookies(res);
+    return res;
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

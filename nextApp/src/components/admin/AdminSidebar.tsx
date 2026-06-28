@@ -1,5 +1,6 @@
 'use client'
 import { usePathname, useRouter } from 'next/navigation';
+import AuthHomeNav from '@/components/AuthHomeNav';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -8,7 +9,8 @@ export default function AdminSidebar() {
 
   return (
     <aside className="admin-sidebar">
-      <h6>Admin</h6>
+      <AuthHomeNav variant="light" />
+      <h6 className="mt-4">Admin</h6>
       <a className={link('/admin/users')} onClick={() => router.push('/admin/users')}>
         <i className="bi bi-people" /> Users
       </a>

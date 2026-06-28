@@ -4,6 +4,18 @@ import { prisma } from "@/lib/prisma";
 import * as bcrypt from "bcryptjs";
 import { logger } from "@/lib/logger";
 
+function logAuth(req: NextRequest, email: string, ip: string, status: number, event: string) {
+  logger.info({
+    type: "request",
+    path: req.url,
+    method: req.method,
+    email,
+    ip,
+    status,
+    event,
+  });
+}
+
 export async function POST(req: NextRequest) {
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0] ??
@@ -16,15 +28,7 @@ export async function POST(req: NextRequest) {
     const password = typeof body?.password === "string" ? body.password : "";
 
     if (!username || !email || !password) {
-      logger.info({
-        type: "request",
-        path: req.url,
-        method: req.method,
-        email,
-        ip,
-        status: 400,
-        event: "auth_missing_required_fields",
-      });
+      logAuth(req, email, ip, 400, "auth_missing_required_fields");
       return NextResponse.json(
         { error: "username, email and password are required" },
         { status: 400 }
@@ -43,15 +47,7 @@ export async function POST(req: NextRequest) {
     ]);
 
     if (existingEmailUser && existingUsernameUser) {
-      logger.info({
-        type: "request",
-        path: req.url,
-        method: req.method,
-        email,
-        ip,
-        status: 409,
-        event: "email_or_username_in_use",
-      });
+      logAuth(req, email, ip, 409, "email_or_username_in_use");
       return NextResponse.json(
         { error: "This email and username are already in use." },
         { status: 409 }
@@ -59,15 +55,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (existingEmailUser) {
-      logger.info({
-        type: "request",
-        path: req.url,
-        method: req.method,
-        email,
-        ip,
-        status: 409,
-        event: "email_conflict",
-      });
+      logAuth(req, email, ip, 409, "email_conflict");
       return NextResponse.json(
         { error: "This email is already linked to an existing account." },
         { status: 409 }
@@ -75,15 +63,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (existingUsernameUser) {
-      logger.info({
-        type: "request",
-        path: req.url,
-        method: req.method,
-        email,
-        ip,
-        status: 409,
-        event: "username_conflict",
-      });
+      logAuth(req, email, ip, 409, "username_conflict");
       return NextResponse.json(
         { error: "This username is already taken." },
         { status: 409 }
@@ -98,33 +78,33 @@ export async function POST(req: NextRequest) {
         email,
         password_hash: passwordHash,
         role: "user",
-		email_verified_at: null,
       },
     });
 
     await createEmailVerificationToken(user.id, user.email);
 
-    logger.info({
+    logAuth(req, email, ip, 201, "registration_completed");
+
+    return NextResponse.json(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        created_at: user.created_at,
+      },
+      { status: 201 }
+    );
+  } catch (err) {
+    logger.error({
       type: "request",
       path: req.url,
       method: req.method,
-      email,
       ip,
-      status: 201,
-      event: "registration_completed",
+      status: 500,
+      event: "registration_error",
+      error: err instanceof Error ? err.message : "unknown",
     });
-
-  return NextResponse.json(
-    {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      created_at: user.created_at, // if exists
-    },
-    { status: 201 }
-  );
-  } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

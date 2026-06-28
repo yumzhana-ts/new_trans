@@ -26,6 +26,25 @@ export default function AuthPage() {
   const [username, setUsername] = useState(''); // only for registration
   
   useEffect(() => {
+    let cancelled = false;
+
+    async function redirectAuthenticatedUser() {
+      try {
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!cancelled && res.ok) window.location.replace("/dashboard");
+      } catch {
+        // Stay on login when the session check is unavailable.
+      }
+    }
+
+    redirectAuthenticatedUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setErrorMessage(null);
     if (params.get('reset') === 'success') {

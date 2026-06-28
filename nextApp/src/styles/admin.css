@@ -4,6 +4,95 @@ body {
   color: #111827;
 }
 
+
+.auth-home-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.auth-home-brand,
+.auth-home-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.auth-home-brand {
+  gap: 10px;
+  min-width: 0;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.auth-home-mark {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.auth-home-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-home-link {
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.auth-home-nav-dark .auth-home-brand,
+.auth-home-nav-dark .auth-home-link {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.auth-home-nav-dark .auth-home-mark {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffb347;
+}
+
+.auth-home-nav-dark .auth-home-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.auth-home-nav-light .auth-home-brand,
+.auth-home-nav-light .auth-home-link {
+  color: #111827;
+}
+
+.auth-home-nav-light .auth-home-mark {
+  background: #111827;
+  color: #fff;
+}
+
+.auth-home-nav-light .auth-home-link:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.profile-page-shell {
+  min-height: 100vh;
+  background: #f5f6f8;
+}
+
+.profile-page-nav {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 18px 16px 0;
+}
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
