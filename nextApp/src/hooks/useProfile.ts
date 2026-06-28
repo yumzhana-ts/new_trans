@@ -4,6 +4,7 @@ type UserProfile = {
   id: number;
   username: string;
   email: string;
+  role?: string | null;
   two_factor_enabled: boolean;
 };
 
@@ -11,7 +12,7 @@ type UseProfileHook = {
   user: UserProfile | null;
   loading: boolean;
   error: string | null;
-  updateProfile: (data: { username: string; email: string }) => Promise<void>;
+  updateProfile: (data: { username: string; }) => Promise<void>;
   deleteProfile: () => Promise<void>;
 };
 
@@ -32,6 +33,7 @@ export function useProfile(): UseProfileHook {
         id: data.id,
         username: data.username,
         email: data.email,
+        role: data.role,
         two_factor_enabled: Boolean(data.two_factor_enabled),
       });
     } catch (err: any) {
@@ -47,12 +49,12 @@ export function useProfile(): UseProfileHook {
 
   // Обновление профиля
   const updateProfile = useCallback(
-    async (data: { username: string; email: string }) => {
+    async (data: { username: string; }) => {
       if (!user) return;
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/auth/${user.id}`, {
+        const res = await fetch("/api/auth/me", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -67,6 +69,7 @@ export function useProfile(): UseProfileHook {
           id: updated.id,
           username: updated.username,
           email: updated.email,
+          role: updated.role ?? prev.role,
         } : null);
       } catch (err: any) {
         setError(err.message || "Unknown error");
@@ -83,7 +86,7 @@ export function useProfile(): UseProfileHook {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/auth/${user.id}`, { method: "DELETE" });
+      const res = await fetch("/api/auth/me", { method: "DELETE" });
       if (!res.ok && res.status !== 204) {
         const errData = await res.json();
         throw new Error(errData.error || "Failed to delete profile");
@@ -91,6 +94,7 @@ export function useProfile(): UseProfileHook {
       setUser(null);
     } catch (err: any) {
       setError(err.message || "Unknown error");
+      throw err;
     } finally {
       setLoading(false);
     }

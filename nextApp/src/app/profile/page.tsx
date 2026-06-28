@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useProfile } from '@/hooks/useProfile';
+import AuthHomeNav from '@/components/AuthHomeNav';
 import '@/styles/admin.css';
 
 export default function ProfilePage() {
@@ -30,7 +31,7 @@ export default function ProfilePage() {
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await updateProfile({ username, email });
+    await updateProfile({ username });
   };
 
   const handleDelete = async () => {
@@ -119,7 +120,11 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
+    <div className="profile-page-shell">
+      <div className="profile-page-nav">
+        <AuthHomeNav variant="light" />
+      </div>
+      <div className="container d-flex justify-content-center align-items-center py-4">
       <div className="card p-4 shadow" style={{ width: '360px' }}>
         <h3 className="mb-3 text-center">My Profile</h3>
 
@@ -141,8 +146,7 @@ export default function ProfilePage() {
               type="email"
               className="form-control"
               value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
+              readOnly
             />
           </div>
 
@@ -229,6 +233,7 @@ export default function ProfilePage() {
         >
           Delete Profile
         </button>
+      </div>
       </div>
     </div>
   );

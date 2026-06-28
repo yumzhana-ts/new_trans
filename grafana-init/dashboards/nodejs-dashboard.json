@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "title": "Node.js Full Observability",
+    "panels": [
+      {
+        "type": "timeseries",
+        "title": "Memory (RSS)",
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Heap Used",
+        "targets": [
+          {
+            "expr": "nodejs_heap_size_used_bytes"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "CPU User",
+        "targets": [
+          {
+            "expr": "rate(process_cpu_user_seconds_total[1m])"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Event Loop Lag",
+        "targets": [
+          {
+            "expr": "nodejs_eventloop_lag_seconds"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "GC Duration",
+        "targets": [
+          {
+            "expr": "rate(nodejs_gc_duration_seconds_sum[1m])"
+          }
+        ]
+      }
+    ],
+    "overwrite": true
+  },
+  "folderId": 0,
+  "overwrite": true
+}

@@ -1,4 +1,4 @@
-export default function UsersTable({ users, onEdit, onDelete }: any) {
+export default function UsersTable({ users, currentUserId, onEdit, onDelete }: any) {
   return (
     <div className="table-responsive">
       <table className="table mb-0">
@@ -28,7 +28,12 @@ export default function UsersTable({ users, onEdit, onDelete }: any) {
                 <button className="btn btn-sm btn-outline-secondary me-2" onClick={() => onEdit(user)}>
                   <i className="bi bi-pencil" />
                 </button>
-                <button className="btn btn-sm btn-outline-danger" onClick={() => onDelete(user.id)}>
+                <button
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => onDelete(user.id)}
+                  disabled={user.id === currentUserId}
+                  title={user.id === currentUserId ? 'Use your profile page to delete your own account' : 'Delete user'}
+                >
                   <i className="bi bi-trash" />
                 </button>
               </td>

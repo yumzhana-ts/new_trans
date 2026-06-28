@@ -33,6 +33,12 @@ export async function PATCH(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    if (existingUser.is_protected && role !== "admin") {
+      return NextResponse.json(
+        { error: "Protected admin cannot be demoted" },
+        { status: 403 }
+      );
+    }
     if (existingUser.id === auth.user.id && existingUser.role === "admin" && role !== "admin") {
       return NextResponse.json({ error: "You cannot remove your own admin role" }, { status: 400 });
     }

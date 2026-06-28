@@ -1,6 +1,6 @@
 name = ft_transcendence
 
-COMPOSE = docker compose -f ./docker-compose.yml --env-file .env
+COMPOSE = docker compose -f ./docker-compose.yml --env-file .env_local
 
 all: start
 
@@ -41,7 +41,7 @@ fclean:
 	@printf "${BOLD}${RED}${CLEAN} Removing everything including volumes...${RESET}\n"
 	@$(COMPOSE) down -v --rmi local
 
-.PHONY: all start dev dev-re build up down re logs ps clean fclean
+.PHONY: all start dev dev-re dev-down build up down re logs ps clean fclean
 
 # Colors
 RED    = \033[0;31m

@@ -16,8 +16,6 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
-    ports:
-    - "3000:3000"
     networks:
       - transnet
     depends_on:
@@ -61,8 +59,8 @@ services:
     container_name: database
     volumes:
       - db-volume:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     networks:
       - transnet
     restart: always
@@ -84,7 +82,7 @@ services:
     volumes:
       - es_data:/usr/share/elasticsearch/data
     env_file:
-      - .env
+      - .env_local
     networks:
       - transnet
 
@@ -94,7 +92,7 @@ services:
     ports:
       - "5601:5601"
     env_file:
-      - .env
+      - .env_local
     networks:
       - transnet
 
@@ -105,7 +103,7 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
       - backend-logs:/logs
     env_file:
-      - .env
+      - .env_local
     networks:
       - transnet
 
@@ -113,20 +111,55 @@ services:
     build: ./elk_init
     container_name: elk-initializer
     env_file:
-      - .env
+      - .env_local
     networks:
       - transnet
     restart: "no"
 
+  prometheus:
+    build: ./prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - transnet
+
+  grafana:
+    build: ./grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-adminpass}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    networks:
+      - transnet
+    depends_on:
+      - prometheus
+
+  grafana-init:
+    build: ./grafana-init
+    container_name: grafana-init
+    env_file:
+      - .env_local
+    environment:
+      GRAFANA_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GRAFANA_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-adminpass}
+    networks:
+      - transnet
+    restart: "no"
+    depends_on:
+      - grafana
+      - prometheus
 
 volumes:
   db-volume:
-    name: transcendence_db-volume
     driver: local
 
   frontend-data:
     driver: local
-  
+
   backend-logs:
     driver: local
 
