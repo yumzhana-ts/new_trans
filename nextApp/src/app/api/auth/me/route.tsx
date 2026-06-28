@@ -110,6 +110,27 @@ export async function DELETE(req: NextRequest) {
     if (auth.response) return auth.response;
     const authUser = auth.user;
 
+    const existingUser = await prisma.users.findUnique({
+      where: { id: authUser.id },
+      select: {
+        id: true,
+        is_protected: true,
+      },
+    });
+
+    if (!existingUser) {
+      const res = NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      clearAuthCookies(res);
+      return res;
+    }
+
+    if (existingUser.is_protected) {
+      return NextResponse.json(
+        { error: "Protected admin cannot be deleted" },
+        { status: 403 }
+      );
+    }
+
     await prisma.$transaction([
       prisma.sessions.deleteMany({ where: { user_id: authUser.id } }),
       prisma.users.delete({ where: { id: authUser.id } }),
