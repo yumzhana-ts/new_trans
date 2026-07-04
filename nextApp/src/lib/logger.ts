@@ -1,22 +1,25 @@
 import fs from "fs";
+import path from "path";
 
-const LOG_PATH = "/var/log/backend/app.log";
-//check the path! 
+const LOG_PATH = process.env.BACKEND_LOG_PATH || "/var/log/backend/app.log";
 
+type LogPayload = Record<string, unknown>;
 
-const stream = fs.createWriteStream(LOG_PATH, { flags: "a" });
-
-function writeLog(data: any) {
-  stream.write(JSON.stringify(data) + "\n");
+function writeLog(data: LogPayload) {
+  try {
+    fs.mkdirSync(path.dirname(LOG_PATH), { recursive: true });
+    fs.appendFileSync(LOG_PATH, JSON.stringify(data) + "\n");
+  } catch (err) {
+    console.error("Failed to write backend log", err);
+  }
 }
 
-
 export const logger = {
-  info: (data: any) => {
+  info: (data: LogPayload) => {
     writeLog({ level: "info", ...data, timestamp: new Date().toISOString() });
   },
 
-  error: (data: any) => {
+  error: (data: LogPayload) => {
     writeLog({ level: "error", ...data, timestamp: new Date().toISOString() });
-  }
+  },
 };

@@ -10,6 +10,18 @@ function loginRedirect(status: string) {
   return NextResponse.redirect(url);
 }
 
+function logVerification(req: NextRequest, ip: string, status: number, event: string) {
+  logger.info({
+    type: "request",
+    path: req.url,
+    method: req.method,
+    email: "undefined",
+    ip,
+    status,
+    event,
+  });
+}
+
 export async function GET(req: NextRequest) {
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0] ??
@@ -19,51 +31,43 @@ export async function GET(req: NextRequest) {
     const token = req.nextUrl.searchParams.get("token");
 
     if (!token) {
+      logVerification(req, ip, 400, "email_verification_token_invalid");
       return loginRedirect("invalid");
     }
 
     await verifyEmailToken(token);
-
-    logger.info({
-      type: "request",
-      path: req.url,
-      method: req.method,
-      email: "undefined",
-      ip,
-      status: 200,
-      event: "email_verified",
-    });
-
+    logVerification(req, ip, 200, "email_verified");
     return loginRedirect("success");
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Internal server error";
     console.error(err);
 
-    let event = "email_verification_error";
-    let redirect = "error";
-
     if (message.includes("already been used")) {
-      event = "email_verification_token_used";
-      redirect = "used";
-    } else if (message.includes("expired")) {
-      event = "email_verification_token_expired";
-      redirect = "expired";
-    } else if (message.includes("token")) {
-      event = "email_verification_token_invalid";
-      redirect = "invalid";
+      logVerification(req, ip, 400, "email_verification_token_used");
+      return loginRedirect("used");
     }
 
-    logger.info({
+    if (message.includes("expired")) {
+      logVerification(req, ip, 400, "email_verification_token_expired");
+      return loginRedirect("expired");
+    }
+
+    if (message.includes("token")) {
+      logVerification(req, ip, 400, "email_verification_token_invalid");
+      return loginRedirect("invalid");
+    }
+
+    logger.error({
       type: "request",
       path: req.url,
       method: req.method,
       email: "undefined",
       ip,
-      status: 400,
-      event,
+      status: 500,
+      event: "email_verification_error",
+      error: message,
     });
-
-    return loginRedirect(redirect);
+    return loginRedirect("error");
   }
 }

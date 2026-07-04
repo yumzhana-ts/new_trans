@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@/styles/admin.css";
+import AuthHomeNav from "@/components/AuthHomeNav";
 
 type RoomPlayer = {
   userId: string;
@@ -304,7 +305,8 @@ export default function TriviaPage() {
             )}
 
             <aside className="game-glass game-sidebar d-flex flex-column p-4">
-              <div className="mb-4">
+              <AuthHomeNav variant="dark" />
+              <div className="mt-4 mb-4">
                 <h2 className="game-sidebar-title">Players</h2>
                 {roomCode && (
                   <p className="mt-2 mb-0 game-question-label">

@@ -5,11 +5,26 @@ export function useUsers() {
   const [roles, setRoles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
   useEffect(() => {
+    loadCurrentUser();
     loadUsers();
     loadRoles();
   }, []);
+
+  const loadCurrentUser = async () => {
+    try {
+      const res = await fetch('/api/auth/me', {
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('Failed to fetch current user');
+      const data = await res.json();
+      setCurrentUserId(data.id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const loadUsers = async () => {
     setLoading(true);
@@ -41,8 +56,26 @@ export function useUsers() {
   };
 
   const deleteUser = async (id: number) => {
+    if (id === currentUserId) {
+      window.alert('Use your profile page to delete your own account.');
+      return;
+    }
+
     if (!window.confirm('Delete user?')) return;
-    await fetch(`/api/auth/${id}`, { method: 'DELETE' });
+
+    const res = await fetch(`/api/auth/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      let message = 'Failed to delete user';
+      try {
+        const data = await res.json();
+        message = data.error || message;
+      } catch {
+        // Keep the default message when the response has no JSON body.
+      }
+      window.alert(message);
+      return;
+    }
+
     setUsers(u => u.filter(user => user.id !== id));
     setSuccessMessage('User deleted');
   };
@@ -93,29 +126,19 @@ export function useUsers() {
   };
 
   const createUser = async (payload: any) => {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch('/api/auth/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-
     const created = await res.json();
 
     if (!res.ok) {
       throw new Error(created.error || 'Failed to create user');
     }
 
-    const newUser = created.user ?? created;
-
-    setUsers(u => [
-      ...u,
-      {
-        ...newUser,
-        created_at: newUser.created_at || new Date().toISOString(),
-      },
-    ]);
-
-    setSuccessMessage('User created');
+    setUsers(u => [...u, created]);
+    setSuccessMessage('User created and email marked as verified');
   };
 
   return {
@@ -124,6 +147,7 @@ export function useUsers() {
     loading,
     successMessage,
     setSuccessMessage,
+    currentUserId,
     deleteUser,
     updateUser,
     createUser,

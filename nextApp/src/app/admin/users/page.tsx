@@ -23,6 +23,7 @@ export default function UsersPage() {
     loading,
     successMessage,
     setSuccessMessage,
+    currentUserId,
     deleteUser,
     updateUser,
     createUser
@@ -86,6 +87,7 @@ export default function UsersPage() {
         ) : (
           <UsersTable
             users={users}
+            currentUserId={currentUserId}
             onEdit={setEditingUser}
             onDelete={deleteUser}
           />
