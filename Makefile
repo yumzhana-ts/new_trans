@@ -1,6 +1,6 @@
 name = ft_transcendence
 
-COMPOSE = docker compose -f ./docker-compose.yml --env-file .env_local
+COMPOSE = docker compose -f ./docker-compose.yml --env-file .env
 
 all: start
 

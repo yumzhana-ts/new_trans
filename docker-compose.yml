@@ -82,7 +82,7 @@ services:
     volumes:
       - es_data:/usr/share/elasticsearch/data
     env_file:
-      - .env_local
+      - .env
     networks:
       - transnet
 
@@ -92,7 +92,7 @@ services:
     ports:
       - "5601:5601"
     env_file:
-      - .env_local
+      - .env
     networks:
       - transnet
 
@@ -103,7 +103,7 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
       - backend-logs:/logs
     env_file:
-      - .env_local
+      - .env
     networks:
       - transnet
 
@@ -111,7 +111,7 @@ services:
     build: ./elk_init
     container_name: elk-initializer
     env_file:
-      - .env_local
+      - .env
     networks:
       - transnet
     restart: "no"
@@ -142,7 +142,7 @@ services:
     build: ./grafana-init
     container_name: grafana-init
     env_file:
-      - .env_local
+      - .env
     environment:
       GRAFANA_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GRAFANA_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-adminpass}
@@ -152,6 +152,32 @@ services:
     depends_on:
       - grafana
       - prometheus
+
+  # ---------------- MONITORING ----------------
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    command:
+      - "--path.rootfs=/host"
+    volumes:
+      - "/:/host:ro,rslave"
+    networks:
+      - transnet
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:ro"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker:/var/lib/docker:ro"
+    networks:
+      - transnet
 
 volumes:
   db-volume:
