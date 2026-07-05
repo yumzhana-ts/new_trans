@@ -53,7 +53,7 @@ export function useAuth() {
       setSuccessMessage("Login successful");
       return {
         id: data.id,
-        redirectTo: typeof data.redirect_to === "string" ? data.redirect_to : "/profile",
+        redirectTo: typeof data.redirect_to === "string" ? data.redirect_to : "/dashboard?view=profile",
       };
     } catch (err: any) {
       setErrorMessage(err.message || "Login failed");
@@ -84,7 +84,7 @@ export function useAuth() {
       setSuccessMessage("Login successful");
       return {
         id: data.id,
-        redirectTo: typeof data.redirect_to === "string" ? data.redirect_to : "/profile",
+        redirectTo: typeof data.redirect_to === "string" ? data.redirect_to : "/dashboard?view=profile",
       };
     } catch (err: any) {
       setErrorMessage(err.message || "2FA verification failed");
