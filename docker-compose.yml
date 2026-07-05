@@ -24,7 +24,7 @@ services:
     volumes:
       - backend-logs:/var/log/backend
     restart: on-failure
-
+  
   trivia-ws:
     build: ./trivia-ws
     container_name: trivia-ws
@@ -42,17 +42,6 @@ services:
     networks:
       - transnet
     restart: on-failure
-
-  caddy:
-    build: ./caddy
-    container_name: caddy
-    ports:
-      - "8080:80"
-      - "8443:443"
-    depends_on:
-      - frontend
-    networks:
-      - transnet
 
   database:
     image: postgres:16
@@ -74,6 +63,15 @@ services:
       timeout: 5s
       retries: 5
 
+  caddy:
+    build: ./caddy
+    container_name: caddy
+    ports:
+      - "8080:80"
+      - "8443:443"
+    networks:
+      - transnet
+  
   elasticsearch:
     build: ./elasticsearch
     container_name: es
@@ -82,7 +80,7 @@ services:
     volumes:
       - es_data:/usr/share/elasticsearch/data
     env_file:
-      - .env_local
+      - .env
     networks:
       - transnet
 
@@ -92,7 +90,7 @@ services:
     ports:
       - "5601:5601"
     env_file:
-      - .env_local
+      - .env
     networks:
       - transnet
 
@@ -103,7 +101,7 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
       - backend-logs:/logs
     env_file:
-      - .env_local
+      - .env
     networks:
       - transnet
 
@@ -111,47 +109,11 @@ services:
     build: ./elk_init
     container_name: elk-initializer
     env_file:
-      - .env_local
+      - .env
     networks:
       - transnet
     restart: "no"
 
-  prometheus:
-    build: ./prometheus
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    networks:
-      - transnet
-
-  grafana:
-    build: ./grafana
-    container_name: grafana
-    ports:
-      - "3001:3000"
-    environment:
-      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-adminpass}
-      GF_AUTH_ANONYMOUS_ENABLED: "false"
-    networks:
-      - transnet
-    depends_on:
-      - prometheus
-
-  grafana-init:
-    build: ./grafana-init
-    container_name: grafana-init
-    env_file:
-      - .env_local
-    environment:
-      GRAFANA_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
-      GRAFANA_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-adminpass}
-    networks:
-      - transnet
-    restart: "no"
-    depends_on:
-      - grafana
-      - prometheus
 
 volumes:
   db-volume:

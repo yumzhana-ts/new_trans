@@ -87,7 +87,7 @@ ok "Security subsystem ready"
 # SECURITY
 # -------------------------
 status "CREATING ROLE"
-ROLE_RESULT=$(curl -s -u "$ELASTIC_AUTH" -X PUT \
+if ! ROLE_RESULT=$(curl -f -s -u "$ELASTIC_AUTH" -X PUT \
 "$ELASTIC_URL/_security/role/write_events" \
 -H "Content-Type: application/json" \
 -d '{
@@ -96,9 +96,9 @@ ROLE_RESULT=$(curl -s -u "$ELASTIC_AUTH" -X PUT \
     "names": ["events-*"],
     "privileges": ["write","create","create_index","auto_configure","manage"]
   }]
-}')
-
-pretty "$ROLE_RESULT"
+}'); then
+    fail "Failed to create write_events role"
+  fi
 ok "Role processed"
 
 status "CREATING LOGSTASH USER"

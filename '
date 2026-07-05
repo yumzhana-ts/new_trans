@@ -1,0 +1,72 @@
+services:
+  caddy:
+    build: ./caddy
+    container_name: caddy
+    ports:
+      - "8080:80"
+      - "8443:443"
+    networks:
+      - transnet
+  
+  elasticsearch:
+    build: ./elasticsearch
+    container_name: es
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    env_file:
+      - .env
+    networks:
+      - transnet
+
+  kibana:
+    build: ./kibana
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    env_file:
+      - .env
+    networks:
+      - transnet
+
+  logstash:
+    build: ./logstash
+    container_name: logstash
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - backend-logs:/logs
+    env_file:
+      - .env
+    networks:
+      - transnet
+
+  elk-initializer:
+    build: ./elk_init
+    container_name: elk-initializer
+    env_file:
+      - .env
+    networks:
+      - transnet
+    restart: "no"
+
+
+volumes:
+  db-volume:
+    driver: local
+
+  frontend-data:
+    driver: local
+
+  backend-logs:
+    driver: local
+
+  es_data:
+    driver: local
+
+  logstash_data:
+    driver: local
+
+networks:
+  transnet:
+    driver: bridge
