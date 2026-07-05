@@ -283,6 +283,46 @@ body {
   }
 }
 
+.dashboard-hide-scrollbar {
+  overflow: auto;
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE/Edge */
+  -ms-overflow-style: none;
+}
+
+.dashboard-hide-scrollbar::-webkit-scrollbar {
+  display: none;                  /* Chrome/Safari */
+}
+
+.dashboard-pack {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.dashboard-pack-selected,
+.dashboard-pack-selected:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.dashboard-content,
+.dashboard-content h3,
+.dashboard-content h5,
+.dashboard-content p,
+.dashboard-content label,
+.dashboard-content .form-label {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.dashboard-content .text-muted {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
 .game-shell {
   background: #070b14;
 }

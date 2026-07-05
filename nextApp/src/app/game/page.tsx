@@ -313,14 +313,16 @@ export default function TriviaPage() {
                     Room {roomCode}
                   </p>
                 )}
-                <button
-                  type="button"
-                  className="btn dashboard-action-btn mt-3 w-100"
-                  onClick={sendReady}
-                  disabled={!roomCode}
-                >
-                  Ready
-                </button>
+                {!activeQuestion && !lastResult && !gameOver && (
+                  <button
+                    type="button"
+                    className="btn dashboard-action-btn mt-3 w-100"
+                    onClick={sendReady}
+                    disabled={!roomCode}
+                  >
+                    Ready
+                  </button>
+                )}
               </div>
 
               <div className="d-flex flex-column gap-3 flex-grow-1">

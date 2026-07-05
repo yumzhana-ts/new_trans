@@ -10,10 +10,13 @@ export default function AuthPage() {
     login,
     register,
     resendVerification,
+    verifyTwoFactor,
     loading,
     errorMessage,
     successMessage,
     pendingVerificationEmail,
+    twoFactorRequired,
+    setTwoFactorRequired,
     setErrorMessage,
     setSuccessMessage,
   } = useAuth();
@@ -24,6 +27,7 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [username, setUsername] = useState(''); // only for registration
+  const [twoFactorCode, setTwoFactorCode] = useState("");
   
   useEffect(() => {
     let cancelled = false;
@@ -77,6 +81,16 @@ export default function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (twoFactorRequired) {
+      const authResult = await verifyTwoFactor(twoFactorCode);
+      if (authResult) {
+        setTwoFactorCode('');
+        window.location.href = authResult.redirectTo;
+      }
+      return;
+    }
+
     if (isLogin) {
       const authResult = await login(email, password);
       if (authResult) window.location.href = authResult.redirectTo;
@@ -147,79 +161,114 @@ export default function AuthPage() {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                  {!isLogin && (
-                    <div className="mb-3">
-                      <label className="form-label">Username</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        required
-                      />
-                    </div>
-                  )}
-
-                  <div className="mb-3">
-                    <label className="form-label">Email</label>
-                    <input
-                      type="email"
-                      className="form-control"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                    <div className="mb-3">
-                      <label className="form-label">Password</label>
-                      <div className="input-group">
+                  {twoFactorRequired ? (
+                    <>
+                      <div className="mb-3">
+                        <label className="form-label">2FA code</label>
                         <input
-                          type={showPassword ? 'text' : 'password'}
+                          type="text"
                           className="form-control"
-                          value={password}
-                          onChange={e => setPassword(e.target.value)}
+                          value={twoFactorCode}
+                          onChange={(e) => setTwoFactorCode(e.target.value)}
+                          placeholder="123456"
+                          autoComplete="one-time-code"
+                          inputMode="numeric"
                           required
                         />
-                        <button
-                          type="button"
-                          className="login-input-btn"
-                          onClick={() => setShowPassword(prev => !prev)}
-                        >
-                          {showPassword ? 'Hide' : 'Show'}
-                        </button>
                       </div>
-                    </div>
 
-                  {!isLogin && (
-                    <div className="mb-3">
-                      <label className="form-label">Confirm password</label>
-                      <div className="input-group">
+                      <button type="submit" className="btn login-primary-btn w-100" disabled={loading}>
+                        {loading ? <span className="spinner-border spinner-border-sm" /> : 'Verify code'}
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn btn-link w-100 mt-2"
+                        onClick={() => {
+                          setTwoFactorRequired(false);
+                          setTwoFactorCode('');
+                        }}
+                      >
+                        Back to login
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {!isLogin && (
+                        <div className="mb-3">
+                          <label className="form-label">Username</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                            required
+                          />
+                        </div>
+                      )}
+
+                      <div className="mb-3">
+                        <label className="form-label">Email</label>
                         <input
-                          type={showConfirmPassword ? 'text' : 'password'}
+                          type="email"
                           className="form-control"
-                          value={confirmPassword}
-                          onChange={e => setConfirmPassword(e.target.value)}
+                          value={email}
+                          onChange={e => setEmail(e.target.value)}
                           required
                         />
-                        <button
-                          type="button"
-                          className="login-input-btn"
-                          onClick={() => setShowConfirmPassword(prev => !prev)}
-                        >
-                          {showConfirmPassword ? 'Hide' : 'Show'}
-                        </button>
                       </div>
-                    </div>
-                  )}
 
-                  <button
-                    type="submit"
-                    className="btn login-primary-btn w-100"
-                    disabled={loading || (!isLogin && password !== confirmPassword)}
-                  >
-                    {loading ? <span className="spinner-border spinner-border-sm" /> : isLogin ? 'Login' : 'Register'}
-                  </button>
+                        <div className="mb-3">
+                          <label className="form-label">Password</label>
+                          <div className="input-group">
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              className="form-control"
+                              value={password}
+                              onChange={e => setPassword(e.target.value)}
+                              required
+                            />
+                            <button
+                              type="button"
+                              className="login-input-btn"
+                              onClick={() => setShowPassword(prev => !prev)}
+                            >
+                              {showPassword ? 'Hide' : 'Show'}
+                            </button>
+                          </div>
+                        </div>
+
+                      {!isLogin && (
+                        <div className="mb-3">
+                          <label className="form-label">Confirm password</label>
+                          <div className="input-group">
+                            <input
+                              type={showConfirmPassword ? 'text' : 'password'}
+                              className="form-control"
+                              value={confirmPassword}
+                              onChange={e => setConfirmPassword(e.target.value)}
+                              required
+                            />
+                            <button
+                              type="button"
+                              className="login-input-btn"
+                              onClick={() => setShowConfirmPassword(prev => !prev)}
+                            >
+                              {showConfirmPassword ? 'Hide' : 'Show'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      <button
+                        type="submit"
+                        className="btn login-primary-btn w-100"
+                        disabled={loading || (!isLogin && password !== confirmPassword)}
+                      >
+                        {loading ? <span className="spinner-border spinner-border-sm" /> : isLogin ? 'Login' : 'Register'}
+                      </button>
+                    </>
+                  )}
                 </form>
 
                 <div className="mt-3 text-center">

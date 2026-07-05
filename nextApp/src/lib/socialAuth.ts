@@ -375,7 +375,7 @@ async function resolveSocialUser(
 }
 
 function redirectTarget(role: string | null): string {
-  return role === "admin" ? "/admin/users" : "/profile";
+  return role === "admin" ? "/admin/users" : "/dashboard?view=profile";
 }
 
 async function finishSocialLogin(socialUser: SocialUserResult): Promise<{
