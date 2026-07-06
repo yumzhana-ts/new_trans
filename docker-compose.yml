@@ -100,7 +100,7 @@ services:
     build: ./logstash
     container_name: logstash
     volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      # - ./logstash/pipeline:/usr/share/logstash/pipeline
       - backend-logs:/logs
     env_file:
       - .env_local
