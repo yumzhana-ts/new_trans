@@ -271,6 +271,20 @@ export default function AuthPage() {
                   )}
                 </form>
 
+                {/* {isLogin && !twoFactorRequired && (
+                  <> */}
+                    <div className="text-center text-muted my-3">or</div>
+                    <a href="/api/auth/social/google/start"
+                      className="btn dashboard-link-btn w-100 text-center">
+                        Continue with Google
+                    </a>
+                    <a href="/api/auth/social/github/start"
+                      className="btn dashboard-link-btn w-100 mt-2 text-center">
+                        Continue with GitHub
+                    </a>
+                  {/* </>
+                )} */}
+
                 <div className="mt-3 text-center">
                   {isLogin && (
                     <div className="mb-2">
