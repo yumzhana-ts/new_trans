@@ -9,10 +9,10 @@ import "@/styles/admin.css";
 const chips = [
   "Email address",
   "Display name / username",
-  "Profile picture",
-  "Google account ID (OAuth)",
-  "Game scores & history",
-  "Friends list",
+  // "Profile picture",
+  // "Google account ID (OAuth)",
+  // "Game scores & history",
+  // "Friends list",
   "IP address & device info",
   "Session cookies",
 ];
@@ -142,7 +142,7 @@ export default function LegalPolicyClient({
                     <Globe size={16} />
                   </div>
                   <p className="mb-0 legal-text">
-                    When you sign in with Google, we receive your name, email, and profile picture from Google. We do not
+                    When you sign in with Google, we receive your name, email from Google. We do not
                     receive your Google password.
                   </p>
                 </div>
