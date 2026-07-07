@@ -112,6 +112,8 @@ handle_path /myservice/* {
 
 **Minor modules total: 3 points**
 
+?Implement remote authentication with OAuth 2.0 - 1
+
 ?Custom-made design system with reusable components, including a proper color palette, typography, and icons - 1 - we don’t have color palette?
 
 ?A complete notification system for all creation, update, and deletion actions - 1
