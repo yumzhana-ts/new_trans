@@ -10,7 +10,7 @@ const chips = [
   "Email address",
   "Display name / username",
   // "Profile picture",
-  // "Google account ID (OAuth)",
+  "Google account ID (OAuth)",
   // "Game scores & history",
   // "Friends list",
   "IP address & device info",
