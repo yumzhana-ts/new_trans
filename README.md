@@ -1,3 +1,5 @@
+*This project has been created as part of the 42 curriculum by adjeuken, ytsyrend, tchvatal, vnicoles*
+
 # 🎯 Trivia App
 
 A social trivia web app built with **Next.js**, **PostgreSQL**, and **Prisma ORM**, served over HTTPS via **Caddy**.
@@ -72,3 +74,50 @@ handle_path /myservice/* {
     reverse_proxy myservice:4000
 }
 ```
+
+## Team members with assigned roles (PO, PM, Tech Lead, Developers)
+
+- Antoine Djeukeng Momo (adjeuken) - Developer
+- Yumzhana Tsyrendorzhieva (ytsyrend) - Developer
+- Tomáš Chvátal (tchvatal) - Developer
+- Vladimir Nicolescu (vnicoles) - Developer
+
+## Project management approach (how work was organized)
+
+## Technologies used with justifications
+
+## Database schema
+
+## List of features and who implemented them
+
+## Chosen modules with justifications and point calculation
+
+### Major:
+
+- Backend and Frontend on one framework - 2
+- A public API to interact with the database - 2
+- Advanced permissions system - 2
+- Infrastructure for log management using ELK - 2
+- Implement real-time features using WebSockets or similar technology - 2
+- Implement a complete web-based game where users can play against each - 2
+- Multiplayer game (more than two players) - 2
+
+**Major modules total: 14 points**
+
+### Minor:
+
+- Use an ORM for the database - 1
+- Implement a complete 2FA (Two-Factor Authentication)  - 1
+- Support for additional browsers - e.g. dashboard scrolling for different browsers - 1
+
+**Minor modules total: 3 points**
+
+?Custom-made design system with reusable components, including a proper color palette, typography, and icons - 1 - we don’t have color palette?
+
+?A complete notification system for all creation, update, and deletion actions - 1
+
+?Backend as microservices - 2
+
+?Monitoring system with Prometheus and Grafana - 2
+
+## Individual contributions of each member
