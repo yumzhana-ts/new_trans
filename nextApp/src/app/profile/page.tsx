@@ -2,6 +2,7 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 import { useProfile } from '@/hooks/useProfile';
 import AuthHomeNav from '@/components/AuthHomeNav';
@@ -128,6 +129,17 @@ export default function ProfilePage() {
       <div className="card p-4 shadow" style={{ width: '360px' }}>
         <h3 className="mb-3 text-center">My Profile</h3>
 
+        {user.must_set_password && (
+          <div className="alert alert-warning py-2">
+            Your account was created with Google or GitHub. Please set a password so you can also use email/password login and account recovery.
+            <div className="mt-2">
+              <Link href="/reset-password" className="alert-link">
+                Set password
+              </Link>
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handleUpdate}>
           <div className="mb-3">
             <label className="form-label">Username</label>
@@ -161,8 +173,13 @@ export default function ProfilePage() {
           <h5 className="mb-2">Two-Factor Authentication</h5>
           {twoFactorError && <div className="alert alert-danger py-2">{twoFactorError}</div>}
           {twoFactorMessage && <div className="alert alert-success py-2">{twoFactorMessage}</div>}
+          {user.must_set_password && (
+            <div className="alert alert-warning py-2">
+              Set a password before enabling 2FA.
+            </div>
+          )}
 
-          {!twoFactorEnabled && !twoFactorSecret && (
+          {!user.must_set_password && !twoFactorEnabled && !twoFactorSecret && (
             <button
               className="btn btn-outline-secondary w-100 mb-2"
               onClick={handleTwoFactorSetup}
@@ -172,7 +189,7 @@ export default function ProfilePage() {
             </button>
           )}
 
-          {twoFactorSecret && (
+          {!user.must_set_password && twoFactorSecret && (
             <div className="mb-3">
               {twoFactorUrl && (
                 <div className="text-center mb-3">
@@ -189,7 +206,7 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {(twoFactorSecret || twoFactorEnabled) && (
+          {!user.must_set_password && (twoFactorSecret || twoFactorEnabled) && (
             <div className="mb-3">
               <label className="form-label">{twoFactorEnabled ? 'Current 2FA code to disable' : 'Current 2FA code to enable'}</label>
               <input
@@ -203,7 +220,7 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {twoFactorSecret && !twoFactorEnabled && (
+          {!user.must_set_password && twoFactorSecret && !twoFactorEnabled && (
             <button
               className="btn btn-primary w-100 mb-2"
               onClick={handleTwoFactorEnable}
@@ -213,7 +230,7 @@ export default function ProfilePage() {
             </button>
           )}
 
-          {twoFactorEnabled && (
+          {!user.must_set_password && twoFactorEnabled && (
             <button
               className="btn btn-outline-danger w-100 mb-2"
               onClick={handleTwoFactorDisable}

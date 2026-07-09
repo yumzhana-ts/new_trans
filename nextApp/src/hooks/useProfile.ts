@@ -5,6 +5,7 @@ type UserProfile = {
   username: string;
   email: string;
   role?: string | null;
+  must_set_password: boolean;
   two_factor_enabled: boolean;
 };
 
@@ -34,6 +35,7 @@ export function useProfile(): UseProfileHook {
         username: data.username,
         email: data.email,
         role: data.role,
+        must_set_password: Boolean(data.must_set_password),
         two_factor_enabled: Boolean(data.two_factor_enabled),
       });
     } catch (err: any) {
@@ -70,6 +72,7 @@ export function useProfile(): UseProfileHook {
           username: updated.username,
           email: updated.email,
           role: updated.role ?? prev.role,
+          must_set_password: Boolean(updated.must_set_password),
         } : null);
       } catch (err: any) {
         setError(err.message || "Unknown error");

@@ -144,7 +144,10 @@ export async function resetPassword(token: string, password: string): Promise<{ 
   await prisma.$transaction([
     prisma.users.update({
       where: { id: passwordResetToken.user_id },
-      data: { password_hash: passwordHash },
+      data: {
+        password_hash: passwordHash,
+        must_set_password: false,
+      },
     }),
     prisma.passwordResetToken.update({
       where: { id: passwordResetToken.id },

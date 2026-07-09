@@ -9,6 +9,7 @@ function serializeUser(user: {
   email: string;
   role: string | null;
   created_at: Date | null;
+  must_set_password: boolean;
   two_factor_credential?: { enabled_at: Date | null } | null;
 }) {
   return {
@@ -17,6 +18,7 @@ function serializeUser(user: {
     email: user.email,
     role: user.role,
     created_at: user.created_at,
+    must_set_password: user.must_set_password,
     two_factor_enabled: Boolean(user.two_factor_credential?.enabled_at),
   };
 }
@@ -35,6 +37,7 @@ export async function GET(req: NextRequest) {
         email: true,
         role: true,
         created_at: true,
+        must_set_password: true,
         two_factor_credential: {
           select: {
             enabled_at: true,
@@ -89,6 +92,7 @@ export async function PUT(req: NextRequest) {
         email: true,
         role: true,
         created_at: true,
+        must_set_password: true,
         two_factor_credential: {
           select: {
             enabled_at: true,

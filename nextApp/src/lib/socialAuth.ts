@@ -357,6 +357,7 @@ async function resolveSocialUser(
       password_hash: passwordHash,
       role: "user",
       email_verified_at: profile.emailVerified ? new Date() : null,
+      must_set_password: true,
       oauth_accounts: {
         create: {
           provider,

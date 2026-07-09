@@ -54,6 +54,10 @@ export default function AuthPage() {
     if (params.get('reset') === 'success') {
       setSuccessMessage('Password reset successful. You can now log in with your new password.');
     }
+    if (params.get('twoFactor') === 'required') {
+      setTwoFactorRequired(true);
+      setSuccessMessage('Enter your 2FA code to finish logging in.');
+    }
     const verificationStatus = params.get('verification');
     if (verificationStatus === 'success') {
       setSuccessMessage('Email verified successfully. You can now log in.');
@@ -72,6 +76,7 @@ export default function AuthPage() {
     }
 
     params.delete('reset');
+    params.delete('twoFactor');
     params.delete('verification');
 
     const nextQuery = params.toString();
@@ -271,8 +276,8 @@ export default function AuthPage() {
                   )}
                 </form>
 
-                {/* {isLogin && !twoFactorRequired && (
-                  <> */}
+                {isLogin && !twoFactorRequired && (
+                  <>
                     <div className="text-center text-muted my-3">or</div>
                     <a href="/api/auth/social/google/start"
                       className="btn dashboard-link-btn w-100 text-center">
@@ -282,8 +287,8 @@ export default function AuthPage() {
                       className="btn dashboard-link-btn w-100 mt-2 text-center">
                         Continue with GitHub
                     </a>
-                  {/* </>
-                )} */}
+                  </>
+                )}
 
                 <div className="mt-3 text-center">
                   {isLogin && (

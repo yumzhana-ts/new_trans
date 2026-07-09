@@ -368,6 +368,17 @@ export default function Dashboard() {
                     >
                       <h3 className="dashboard-title mb-4">My Profile</h3>
 
+                      {user.must_set_password && (
+                        <div className="alert alert-warning py-2">
+                          Your account was created with Google or GitHub. Please set a password so you can also use email/password login and account recovery.
+                          <div className="mt-2">
+                            <Link href="/reset-password" className="alert-link">
+                              Set password
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+
                       <form onSubmit={handleUpdateProfile}>
                         <div className="mb-3">
                           <label className="form-label">Username</label>
@@ -421,8 +432,13 @@ export default function Dashboard() {
                         <h5 className="mb-2">Two-Factor Authentication</h5>
                         {twoFactorError && <div className="alert alert-danger py-2">{twoFactorError}</div>}
                         {twoFactorMessage && <div className="alert alert-success py-2">{twoFactorMessage}</div>}
+                        {user.must_set_password && (
+                          <div className="alert alert-warning py-2">
+                            Set a password before enabling 2FA.
+                          </div>
+                        )}
 
-                        {!twoFactorEnabled && !twoFactorSecret && (
+                        {!user.must_set_password && !twoFactorEnabled && !twoFactorSecret && (
                           <button
                             className="btn dashboard-link-btn w-100 text-center mb-2"
                             onClick={handleTwoFactorSetup}
@@ -433,7 +449,7 @@ export default function Dashboard() {
                           </button>
                         )}
 
-                        {twoFactorSecret && (
+                        {!user.must_set_password && twoFactorSecret && (
                           <div className="mb-3">
                             {twoFactorUrl && (
                               <div className="text-center mb-3">
@@ -453,7 +469,7 @@ export default function Dashboard() {
                           </div>
                         )}
 
-                        {(twoFactorSecret || twoFactorEnabled) && (
+                        {!user.must_set_password && (twoFactorSecret || twoFactorEnabled) && (
                           <div className="mb-3">
                             <label className="form-label">
                               {twoFactorEnabled ? "Current 2FA code to disable" : "Current 2FA code to enable"}
@@ -469,7 +485,7 @@ export default function Dashboard() {
                           </div>
                         )}
 
-                        {twoFactorSecret && !twoFactorEnabled && (
+                        {!user.must_set_password && twoFactorSecret && !twoFactorEnabled && (
                           <button
                             className="btn dashboard-action-btn w-100 mb-2"
                             onClick={handleTwoFactorEnable}
@@ -480,7 +496,7 @@ export default function Dashboard() {
                           </button>
                         )}
 
-                        {twoFactorEnabled && (
+                        {!user.must_set_password && twoFactorEnabled && (
                           <button
                             className="btn dashboard-link-btn text-danger w-100 mb-2"
                             onClick={handleTwoFactorDisable}

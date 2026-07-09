@@ -8,6 +8,18 @@ export async function POST(req: NextRequest) {
   if (auth.response) return auth.response;
 
   try {
+    const user = await prisma.users.findUnique({
+      where: { id: auth.user.id },
+      select: { must_set_password: true },
+    });
+
+    if (!user || user.must_set_password) {
+      return NextResponse.json(
+        { error: "Set a password before enabling 2FA." },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const code = typeof body?.code === "string" ? body.code : "";
 
